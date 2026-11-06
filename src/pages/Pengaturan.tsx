@@ -23,7 +23,6 @@ export default function Pengaturan() {
               </select>
             }
           />
-          <Row label={t('settings.display')} value={t('settings.display.value')} />
           <Row label={t('settings.notif')} value={t('settings.notif.value')} />
           <Row label={t('settings.threshold')} value={t('settings.threshold.value', { min: CONFIG.doLevels.idealMin, max: CONFIG.doLevels.idealMax, safe: CONFIG.doLevels.safeMin, critical: CONFIG.doLevels.critical, unit: CONFIG.doUnit })} />
           <Row label={t('settings.device')} value={CONFIG.deviceId} />

@@ -119,7 +119,7 @@ export const id = {
   'settings.display': 'Tampilan',
   'settings.display.value': 'Ikuti pengaturan HP',
   'settings.notif': 'Notifikasi alarm',
-  'settings.notif.value': 'Menunggu HTTPS',
+  'settings.notif.value': '-',
   'settings.threshold': 'Ambang DO',
   'settings.threshold.value': 'ideal {min}–{max} · aman ≥ {safe} · kritis < {critical} ({unit})',
   'settings.device': 'Perangkat',
