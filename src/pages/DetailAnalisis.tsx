@@ -1,5 +1,6 @@
 import { Link, useParams } from 'react-router-dom'
-import { Card, Chip, Row } from '../components/ui'
+import { Card, Chip, Page, PageHead, Row } from '../components/ui'
+import { MORE_LINK } from '../components/styles'
 import { useStore } from '../data/storeContext'
 import { t } from '../i18n'
 import { formatDateTime } from '../lib/format'
@@ -12,18 +13,16 @@ export default function DetailAnalisis() {
   const a = analyses.find((x) => x.id === id)
   if (!a) {
     return (
-      <div className="page page--stack page--narrow">
-        <Link to="/pakan" className="more">{t('detail.back')}</Link>
+      <Page stack narrow>
+        <Link to="/pakan" className={MORE_LINK}>{t('detail.back')}</Link>
         <p>{t('detail.notFound')}</p>
-      </div>
+      </Page>
     )
   }
   return (
-    <div className="page page--stack page--narrow">
-      <Link to="/pakan" className="more">{t('detail.back')}</Link>
-      <header className="head">
-        <h1>{t('detail.title')}</h1>
-      </header>
+    <Page stack narrow>
+      <Link to="/pakan" className={MORE_LINK}>{t('detail.back')}</Link>
+      <PageHead title={t('detail.title')} />
       <Card>
         {a.result ? (
           <>
@@ -32,7 +31,7 @@ export default function DetailAnalisis() {
             <Row label={t('detail.confidence')} value={a.result.confidence} />
           </>
         ) : (
-          <p className="muted">{t('detail.noResult')}</p>
+          <p className="text-muted">{t('detail.noResult')}</p>
         )}
         <Row label={t('detail.capturedAt')} value={formatDateTime(a.capturedAt)} />
         <Row label={t('detail.model')} value={a.modelVersion ?? t('common.unknown')} />
@@ -40,10 +39,10 @@ export default function DetailAnalisis() {
         <Row label={t('detail.recommendation')} value={recommendationText(a.recommendation)} />
       </Card>
       <Card tone="warning">
-        <p className="small">{t('detail.note')}</p>
-        <p className="small">{t('detail.recommendation.note')}</p>
-        <p className="small">{t('detail.photoNotStored')}</p>
+        <p className="text-caption">{t('detail.note')}</p>
+        <p className="text-caption">{t('detail.recommendation.note')}</p>
+        <p className="text-caption">{t('detail.photoNotStored')}</p>
       </Card>
-    </div>
+    </Page>
   )
 }

@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
-import { Card, Chip } from '../components/ui'
+import { Card, Chip, List, Page, PageHead } from '../components/ui'
+import { btnClass } from '../components/styles'
 import { CONFIG } from '../config'
 import { useStore } from '../data/storeContext'
 import { t } from '../i18n'
@@ -11,24 +12,22 @@ export default function Alarm() {
   const active = alarms.filter((a) => a.endedAt === null).sort(byStart)
   const past = alarms.filter((a) => a.endedAt !== null).sort(byStart)
   return (
-    <div className="page page--alarm">
-      <header className="head">
-        <h1>{t('alarm.title')}</h1>
-      </header>
-      <p className="muted small span-all">{t('alarm.threshold', { min: CONFIG.doLevels.idealMin, max: CONFIG.doLevels.idealMax, safe: CONFIG.doLevels.safeMin, critical: CONFIG.doLevels.critical, unit: CONFIG.doUnit })}</p>
-      {active.length === 0 ? <p className="muted span-all">{t('alarm.none')}</p> : null}
+    <Page className="md:grid-cols-2 md:items-start">
+      <PageHead title={t('alarm.title')} />
+      <p className="text-caption text-muted md:col-span-full">{t('alarm.threshold', { min: CONFIG.doLevels.idealMin, max: CONFIG.doLevels.idealMax, safe: CONFIG.doLevels.safeMin, critical: CONFIG.doLevels.critical, unit: CONFIG.doUnit })}</p>
+      {active.length === 0 ? <p className="text-muted md:col-span-full">{t('alarm.none')}</p> : null}
       {active.length > 0 ? (
-        <div className="list span-all">
+        <List className="md:col-span-full">
           {active.map((a) => (
             <Card key={a.id} tone="danger">
               <Chip tone="danger">{t('alarm.active')}</Chip>
-              <p className="alarm-title">{t(`alarm.kind.${a.kind}`)}</p>
+              <p className="text-lead font-extrabold text-danger">{t(`alarm.kind.${a.kind}`)}</p>
               {a.valueAtStart !== null ? <p>{t('alarm.valueAtStart', { value: formatNumber(a.valueAtStart, 1), unit: CONFIG.doUnit })}</p> : null}
-              <p className="muted small">{t('alarm.since', { time: formatDateTime(a.startedAt) })}</p>
-              <Link to="/" className="btn btn--primary">{t('alarm.viewChart')}</Link>
+              <p className="text-caption text-muted">{t('alarm.since', { time: formatDateTime(a.startedAt) })}</p>
+              <Link to="/" className={btnClass('primary')}>{t('alarm.viewChart')}</Link>
             </Card>
           ))}
-        </div>
+        </List>
       ) : null}
       <Card title={t('alarm.history')}>
         {past.map((a) => (
@@ -38,8 +37,8 @@ export default function Alarm() {
         ))}
       </Card>
       <Card title={t('alarm.push.title')}>
-        <p className="muted small">{t('alarm.push.body')}</p>
+        <p className="text-caption text-muted">{t('alarm.push.body')}</p>
       </Card>
-    </div>
+    </Page>
   )
 }

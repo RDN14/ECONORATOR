@@ -18,19 +18,34 @@ const ITEMS: Array<{ to: string; label: TextKey; icon: keyof typeof ICONS; end?:
   { to: '/pengaturan', label: 'nav.settings', icon: 'settings' },
 ]
 
+// Kelas per bagian. Urutan varian: dasar (HP) -> md (tablet) -> xl (desktop) -> short (layar landscape pendek).
+const NAV =
+  'fixed inset-x-0 bottom-0 z-10 flex justify-center border-t border-line bg-surface pb-[env(safe-area-inset-bottom)] ' +
+  'md:sticky md:top-0 md:h-dvh md:w-(--rail-w) md:flex-none md:flex-col md:justify-start md:gap-1 md:self-start md:overflow-y-auto md:border-t-0 md:border-r md:px-2 md:py-3 ' +
+  'xl:px-3 xl:py-4 short:md:gap-0.5 short:md:py-2 print:hidden'
+const BRAND = 'hidden items-center justify-center rounded-card bg-white p-1.5 md:mb-2 md:flex xl:mb-3 xl:px-3 xl:py-2.5 short:md:hidden'
+const ITEM =
+  'flex max-w-24 flex-1 flex-col items-center justify-center gap-0.5 min-h-(--nav-h) text-micro hover:bg-primary-soft hover:text-primary ' +
+  'md:max-w-none md:flex-none md:rounded-card xl:min-h-12 xl:flex-row xl:justify-start xl:gap-3 xl:px-3.5 xl:text-nav'
+
 /**
- * Satu <nav> untuk semua ukuran layar; letaknya diatur CSS:
+ * Satu <nav> untuk semua ukuran layar; letaknya diatur utilitas responsif:
  * HP = bar bawah, tablet = rel di kiri (ikon di atas teks), layar lebar = bilah samping (ikon di samping teks).
  */
 export function AppNav() {
   return (
-    <nav className="nav" aria-label="Navigasi utama">
-      <div className="nav__brand">
-        <img className="nav__logo nav__logo--icon" src="/logo-econorator-icon.png" alt={t('app.name')} width="34" height="39" />
-        <img className="nav__logo nav__logo--full" src="/logo-econorator.png" alt={t('app.name')} width="190" height="48" />
+    <nav className={NAV} aria-label="Navigasi utama">
+      <div className={BRAND}>
+        <img className="block h-auto xl:hidden" src="/logo-econorator-icon.png" alt={t('app.name')} width="34" height="39" />
+        <img className="hidden h-auto w-full max-w-47.5 xl:block" src="/logo-econorator.png" alt={t('app.name')} width="190" height="48" />
       </div>
       {ITEMS.map((it) => (
-        <NavLink key={it.to} to={it.to} end={it.end} className={({ isActive }) => `nav__item ${isActive ? 'is-active' : ''}`}>
+        <NavLink
+          key={it.to}
+          to={it.to}
+          end={it.end}
+          className={({ isActive }) => `${ITEM} ${isActive ? 'font-extrabold text-primary md:bg-primary-soft' : 'font-semibold text-muted'}`}
+        >
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
             <path d={ICONS[it.icon]} />
           </svg>

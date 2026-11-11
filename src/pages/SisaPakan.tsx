@@ -1,7 +1,8 @@
 import { useRef, useState } from 'react'
 import type { ChangeEvent } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { Card, Chip } from '../components/ui'
+import { Card, Chip, Chips, Page, PageHead, Stack } from '../components/ui'
+import { btnClass, ITEM_MAIN, ITEM_ROW, MORE_LINK, PLAIN_LINK } from '../components/styles'
 import { CONFIG } from '../config'
 import { useStore } from '../data/storeContext'
 import { t } from '../i18n'
@@ -38,53 +39,50 @@ export default function SisaPakan() {
   }
 
   return (
-    <div className="page page--feed">
-      <header className="head">
-        <h1>{t('feed.title')}</h1>
-        <p className="muted">{t('feed.subtitle')}</p>
-      </header>
+    <Page className="md:grid-cols-2 md:items-start">
+      <PageHead title={t('feed.title')} subtitle={t('feed.subtitle')} />
 
-      <div className="stack">
+      <Stack>
         {!online ? (
           <Card tone="warning">
-            <p className="strong">{t('feed.offlineNote')}</p>
+            <p className="font-semibold">{t('feed.offlineNote')}</p>
           </Card>
         ) : null}
 
         <input ref={inputRef} type="file" accept="image/*" capture="environment" hidden onChange={onFile} data-testid="camera-input" />
-        <button type="button" className="btn btn--primary" disabled={busy} onClick={() => inputRef.current?.click()}>
+        <button type="button" className={btnClass('primary')} disabled={busy} onClick={() => inputRef.current?.click()}>
           {busy ? t('feed.compressing') : touch ? t('feed.take') : t('feed.pick')}
         </button>
-        {error ? <p className="error" role="alert">{t('feed.compressError')}</p> : null}
+        {error ? <p className="font-semibold text-danger" role="alert">{t('feed.compressError')}</p> : null}
 
         <Card title={t('feed.last.title')}>
           {last?.result ? (
-            <Link className="plain-link" to={`/pakan/${last.id}`}>
-              <div className="chips">
-                <span className="big__num big__num--md">{last.result.leftoverPct}%</span>
+            <Link className={PLAIN_LINK} to={`/pakan/${last.id}`}>
+              <Chips>
+                <span className="text-stat-sm leading-none font-extrabold md:text-stat-md lg:text-stat-lg">{last.result.leftoverPct}%</span>
                 <Chip tone="warning">{t('home.feed.category', { category: t(`category.${last.result.category}`) })}</Chip>
-              </div>
-              <p className="strong">{recommendationText(last.recommendation)}</p>
-              <p className="muted small">{t('feed.last.confidence', { value: last.result.confidence, time: formatDateTime(last.capturedAt) })}</p>
+              </Chips>
+              <p className="font-semibold">{recommendationText(last.recommendation)}</p>
+              <p className="text-caption text-muted">{t('feed.last.confidence', { value: last.result.confidence, time: formatDateTime(last.capturedAt) })}</p>
             </Link>
           ) : (
-            <p className="muted">{t('feed.last.none')}</p>
+            <p className="text-muted">{t('feed.last.none')}</p>
           )}
         </Card>
-      </div>
+      </Stack>
 
       <Card title={t('feed.list.title')}>
         {analyses.slice(0, 3).map((a) => (
-          <Link key={a.id} to={`/pakan/${a.id}`} className="item">
-            <span className="muted small">{formatDateTime(a.capturedAt)}</span>
-            <span className="item__main">
+          <Link key={a.id} to={`/pakan/${a.id}`} className={ITEM_ROW}>
+            <span className="text-caption text-muted">{formatDateTime(a.capturedAt)}</span>
+            <span className={ITEM_MAIN}>
               <strong>{a.result ? `${a.result.leftoverPct}% · ${t(`category.${a.result.category}`)}` : t('history.feedNoResult')}</strong>
               <Chip tone={STATUS_TONE[a.status]}>{t(`status.${a.status}`)}</Chip>
             </span>
           </Link>
         ))}
-        <Link to="/riwayat" className="more">{t('feed.list.more')}</Link>
+        <Link to="/riwayat" className={MORE_LINK}>{t('feed.list.more')}</Link>
       </Card>
-    </div>
+    </Page>
   )
 }

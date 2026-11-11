@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { Card, Chip } from '../components/ui'
+import { Card, Chip, ChipButton, Chips, Page, PageHead } from '../components/ui'
+import { PLAIN_LINK } from '../components/styles'
 import { DoChart } from '../components/DoChart'
 import { CONFIG } from '../config'
 import { useStore } from '../data/storeContext'
@@ -15,6 +16,9 @@ const RANGES = [
   { hours: 24, label: 'home.chart.24h' },
 ] as const
 
+/** Angka besar (DO, % sisa pakan). Ukurannya membesar di tablet dan laptop. */
+const STAT = 'leading-none font-extrabold'
+
 export default function Beranda() {
   const { latest, doSeries, analyses, online, lastUpdate } = useStore()
   const [hours, setHours] = useState<number>(6)
@@ -28,58 +32,57 @@ export default function Beranda() {
   const doChip = latest.do.valid ? <Chip tone={DO_LEVEL_TONE[level]}>{levelText}</Chip> : <Chip tone="danger">{t('home.do.invalid')}</Chip>
 
   return (
-    <div className="page page--home">
-      <header className="head">
-        <h1>{t('home.pond')}</h1>
-        <p className="muted">{t('home.device', { device: CONFIG.deviceId })}</p>
-      </header>
+    // Tablet: 2 kolom, grafik dan sisa pakan selebar baris. Laptop: 3 kolom, sisa pakan di samping DO dan paddle.
+    // grid-flow-dense mengisi sel kosong di sebelah kartu DO dengan kartu paddle meski urutan DOM-nya setelah grafik.
+    <Page className="md:grid-flow-dense md:grid-cols-2 lg:grid-cols-3">
+      <PageHead title={t('home.pond')} subtitle={t('home.device', { device: CONFIG.deviceId })} />
 
-      <Card title={t('home.do.title')} className="h-do">
-        <div className={`big ${online ? '' : 'big--stale'}`}>
-          <span className="big__num">{formatNumber(latest.do.value, 2)}</span>
-          <span className="big__unit">{CONFIG.doUnit}</span>
+      <Card title={t('home.do.title')}>
+        <div className={`flex items-end gap-2 ${online ? '' : 'opacity-55'}`}>
+          <span className={`${STAT} text-stat md:text-stat-md lg:text-stat-lg`}>{formatNumber(latest.do.value, 2)}</span>
+          <span className="pb-1 font-semibold text-muted">{CONFIG.doUnit}</span>
         </div>
         {online ? doChip : <Chip tone="warning">{t('home.do.stale', { time: formatTime(lastUpdate) })}</Chip>}
       </Card>
 
-      <Card title={t('home.chart.title')} className="h-chart">
-        <div className="chips" role="group" aria-label={t('home.chart.title')}>
+      <Card title={t('home.chart.title')} className="md:col-span-full">
+        <Chips role="group" aria-label={t('home.chart.title')}>
           {RANGES.map((r) => (
-            <button key={r.hours} type="button" className={`chip chip--btn ${hours === r.hours ? 'chip--selected' : 'chip--primary'}`} aria-pressed={hours === r.hours} onClick={() => setHours(r.hours)}>
+            <ChipButton key={r.hours} selected={hours === r.hours} onClick={() => setHours(r.hours)}>
               {t(r.label)}
-            </button>
+            </ChipButton>
           ))}
-        </div>
+        </Chips>
         <DoChart points={points} unit={CONFIG.doUnit} label={t('home.chart.label', { range: `${hours} jam` })} />
-        <p className="muted small">{t('home.chart.legend', { min: lv.idealMin, max: lv.idealMax, safe: lv.safeMin, critical: lv.critical, unit: CONFIG.doUnit })}</p>
+        <p className="text-caption text-muted">{t('home.chart.legend', { min: lv.idealMin, max: lv.idealMax, safe: lv.safeMin, critical: lv.critical, unit: CONFIG.doUnit })}</p>
       </Card>
 
-      <Card title={t('home.paddle.title')} className="h-paddle">
-        <div className="chips">
+      <Card title={t('home.paddle.title')}>
+        <Chips>
           <Chip tone="primary">{t('home.paddle.mode', { mode: latest.panel.mode ?? t('home.paddle.unknown') })}</Chip>
           <Chip tone="success">{latest.panel.motorState ?? t('home.paddle.unknown')}</Chip>
-        </div>
-        <p className="strong">
+        </Chips>
+        <p className="font-semibold">
           {t('home.paddle.speed', {
             value: latest.panel.speed ? `${formatNumber(latest.panel.speed.value, 0)} ${latest.panel.speed.unit}` : t('home.paddle.unknown'),
           })}
         </p>
       </Card>
 
-      <Card title={t('home.feed.title')} className="h-feed">
+      <Card title={t('home.feed.title')} className="md:col-span-full lg:col-span-1">
         {lastFeed?.result ? (
-          <Link className="plain-link" to={`/pakan/${lastFeed.id}`}>
-            <div className="chips">
-              <span className="big__num big__num--md">{lastFeed.result.leftoverPct}%</span>
+          <Link className={PLAIN_LINK} to={`/pakan/${lastFeed.id}`}>
+            <Chips>
+              <span className={`${STAT} text-stat-sm md:text-stat-md lg:text-stat-lg`}>{lastFeed.result.leftoverPct}%</span>
               <Chip tone="warning">{t('home.feed.category', { category: t(`category.${lastFeed.result.category}`) })}</Chip>
-            </div>
-            <p className="strong">{recommendationText(lastFeed.recommendation)}</p>
-            <p className="muted small">{t('home.feed.detail', { time: formatDateTime(lastFeed.capturedAt) })}</p>
+            </Chips>
+            <p className="font-semibold">{recommendationText(lastFeed.recommendation)}</p>
+            <p className="text-caption text-muted">{t('home.feed.detail', { time: formatDateTime(lastFeed.capturedAt) })}</p>
           </Link>
         ) : (
-          <p className="muted">{t('home.feed.none')}</p>
+          <p className="text-muted">{t('home.feed.none')}</p>
         )}
       </Card>
-    </div>
+    </Page>
   )
 }

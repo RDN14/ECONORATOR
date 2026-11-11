@@ -1,4 +1,4 @@
-import { act, fireEvent, render, screen } from '@testing-library/react'
+import { act, fireEvent, render, screen, within } from '@testing-library/react'
 import { useEffect } from 'react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { ConnBar } from '../components/ConnBar'
@@ -144,7 +144,8 @@ describe('Halaman (perilaku yang diputuskan asistensi 4 Nov)', () => {
     expect(screen.getByText(/KRITIS \(di bawah 2\)/)).toBeInTheDocument()
     go('Alarm')
     expect(screen.getByText('ALARM AKTIF')).toBeInTheDocument()
-    expect(screen.getByText('DO KRITIS', { selector: '.alarm-title' })).toBeInTheDocument()
+    const aktif = screen.getByText('ALARM AKTIF').closest('section') as HTMLElement
+    expect(within(aktif).getByText('DO KRITIS')).toBeInTheDocument()
     expect(screen.getByText(/Nilai saat alarm mulai: .* mg\/L \(contoh\)/)).toBeInTheDocument()
     go('Pengaturan')
     fireEvent.click(screen.getByLabelText(/Simulasikan DO turun/))
