@@ -42,7 +42,16 @@ Satu kode untuk semua layar. Tata letak berubah otomatis mengikuti **lebar jende
 | ≥ 1100 px | tablet landscape, laptop | rel di kiri | 3 kolom (DO, paddle, sisa pakan; grafik penuh di bawahnya) |
 | ≥ 1280 px | desktop | bilah samping dengan nama aplikasi dan label di samping ikon | 3 kolom |
 
-Sisa Pakan, Alarm, Pengaturan memakai 2 kolom mulai 768 px; daftar Riwayat menjadi kisi (2–3 kolom). Detail analisis dan Pratinjau foto dibatasi 640 px agar nyaman dibaca. Grafik DO mengukur lebar wadahnya (skala 1:1, teks tidak melar) dan menampilkan jam awal dan akhir. Di desktop tombol foto berlabel "PILIH FOTO ANCO" karena yang terbuka pemilih berkas, bukan kamera. Tampilan cetak (Ekspor PDF) tidak terpengaruh. Lihat `src/index.css` (blok "Responsif").
+Sisa Pakan, Alarm, Pengaturan memakai 2 kolom mulai 768 px; daftar Riwayat menjadi kisi (2–3 kolom). Detail analisis dan Pratinjau foto dibatasi 640 px agar nyaman dibaca. Grafik DO mengukur lebar wadahnya (skala 1:1, teks tidak melar) dan menampilkan jam awal dan akhir. Di desktop tombol foto berlabel "PILIH FOTO ANCO" karena yang terbuka pemilih berkas, bukan kamera. Tampilan cetak (Ekspor PDF) tidak terpengaruh. Aturannya berupa utilitas responsif Tailwind (`md:`, `lg:`, `xl:`) di komponen; breakpoint dan token ada di `src/index.css`.
+
+## Gaya: Tailwind CSS v4
+
+- Konfigurasi lewat CSS, tanpa `tailwind.config`: `src/index.css` berisi token (`@theme`: warna, radius, skala huruf, breakpoint) dan gaya dasar. Gaya komponen = kelas utilitas langsung di `src/components` dan `src/pages`. Kelas yang dipakai banyak halaman (kartu, tombol, tautan) ada di `src/components/styles.ts`.
+- Mode gelap dan kontras tinggi hanya menimpa token warna (`:root` di `src/index.css`), jadi komponen tidak memakai `dark:`.
+- Breakpoint: `md` 768 px, `lg` 1100 px, `xl` 1280 px (ditulis dalam rem supaya urutan media query benar). Varian `short:` = layar pendek (tinggi ≤ 520 px, HP landscape), dipakai sebagai `short:md:...`.
+- Ukuran yang berubah menurut layar/pointer (`--tap`, `--nav-h`, `--rail-w`, `--gutter`, `--page-max`) tetap variabel CSS di `src/index.css` dan dipakai lewat `min-h-(--tap)` dan sejenisnya.
+- Jangan memakai utilitas ukuran huruf bawaan Tailwind (`text-sm`, `text-lg`, ...) karena ikut mengubah tinggi baris; pakai skala aplikasi (`text-micro`, `text-caption`, `text-nav`, `text-action`, `text-lead`, `text-h1`, `text-stat*`).
+- Tailwind v4 menargetkan Chrome 111, Safari 16.4, dan Firefox 128 ke atas (dokumen resmi Tailwind). HP Android dengan Chrome yang jauh lebih lama bisa tampil rusak.
 
 ## Pemasangan PWA: hanya Android
 

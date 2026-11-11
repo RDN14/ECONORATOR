@@ -14,13 +14,13 @@ import SisaPakan from './pages/SisaPakan'
 export function Shell() {
   const { online, lastUpdate } = useStore()
   return (
-    <div className="app">
+    <div className="flex min-h-dvh flex-col md:flex-row print:block">
       <AppNav />
-      <div className="app__main">
-        <div className="top">
+      <div className="flex min-w-0 flex-1 flex-col">
+        <div className="sticky top-0 z-5 print:hidden">
           <ConnBar online={online} lastUpdate={lastUpdate} />
         </div>
-        <main className="content">
+        <main className="mx-auto flex w-full max-w-[calc(var(--page-max)+2*var(--gutter))] flex-1 flex-col px-(--gutter) pt-4 pb-[calc(var(--nav-h)+24px+env(safe-area-inset-bottom))] md:pb-8 print:max-w-none print:p-0">
           <Routes>
             <Route path="/" element={<Beranda />} />
             <Route path="/pakan" element={<SisaPakan />} />

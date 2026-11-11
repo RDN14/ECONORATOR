@@ -3,6 +3,8 @@ import { CONFIG } from '../config'
 import type { DoPoint } from '../data/types'
 import { formatTime } from '../lib/format'
 
+const TICK = 'fill-muted text-micro'
+
 /** Lebar awal sebelum diukur (dan di lingkungan tanpa layout, mis. uji jsdom). */
 const FALLBACK_WIDTH = 300
 
@@ -47,8 +49,8 @@ export function DoChart({ points, label, unit }: { points: DoPoint[]; label: str
 
   if (points.length < 2) {
     return (
-      <div ref={ref} className="chart-wrap">
-        <div className="chart chart--empty" style={{ height: total }} role="img" aria-label={label} />
+      <div ref={ref} className="w-full">
+        <div className="w-full rounded-lg bg-placeholder" style={{ height: total }} role="img" aria-label={label} />
       </div>
     )
   }
@@ -61,19 +63,19 @@ export function DoChart({ points, label, unit }: { points: DoPoint[]; label: str
   const first = points[0]
   const last = points[points.length - 1]
   return (
-    <div ref={ref} className="chart-wrap">
-      <svg className="chart" width={W} height={total} viewBox={`0 0 ${W} ${total}`} role="img" aria-label={label}>
-        <rect x={padL} y={y(l.idealMax)} width={W - padL} height={y(l.idealMin) - y(l.idealMax)} className="chart__ideal" />
-        <line x1={padL} x2={W} y1={y(l.safeMin)} y2={y(l.safeMin)} className="chart__warn" />
-        <line x1={padL} x2={W} y1={y(l.critical)} y2={y(l.critical)} className="chart__crit" />
+    <div ref={ref} className="w-full">
+      <svg className="block max-w-full" width={W} height={total} viewBox={`0 0 ${W} ${total}`} role="img" aria-label={label}>
+        <rect x={padL} y={y(l.idealMax)} width={W - padL} height={y(l.idealMin) - y(l.idealMax)} className="fill-success opacity-14" />
+        <line x1={padL} x2={W} y1={y(l.safeMin)} y2={y(l.safeMin)} className="stroke-warning" strokeWidth={1} strokeDasharray="4 3" />
+        <line x1={padL} x2={W} y1={y(l.critical)} y2={y(l.critical)} className="stroke-danger" strokeWidth={1} strokeDasharray="4 3" />
         {[l.idealMax, l.idealMin, l.safeMin, l.critical].map((v) => (
-          <text key={v} x="0" y={y(v) + 4} className="chart__tick">{v}</text>
+          <text key={v} x="0" y={y(v) + 4} className={TICK}>{v}</text>
         ))}
-        <text x="0" y="11" className="chart__tick">{unit}</text>
-        <line x1={padL} x2={W} y1={y(0)} y2={y(0)} className="chart__axis" />
-        <path d={d} className="chart__line" fill="none" />
-        <text x={padL} y={total - 5} className="chart__tick">{formatTime(first.ts)}</text>
-        <text x={W - 2} y={total - 5} className="chart__tick" textAnchor="end">{formatTime(last.ts)}</text>
+        <text x="0" y="11" className={TICK}>{unit}</text>
+        <line x1={padL} x2={W} y1={y(0)} y2={y(0)} className="stroke-line" strokeWidth={1} />
+        <path d={d} className="stroke-primary" strokeWidth={2} strokeLinejoin="round" fill="none" />
+        <text x={padL} y={total - 5} className={TICK}>{formatTime(first.ts)}</text>
+        <text x={W - 2} y={total - 5} className={TICK} textAnchor="end">{formatTime(last.ts)}</text>
       </svg>
     </div>
   )
