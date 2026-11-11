@@ -66,17 +66,9 @@ Nama aplikasi **Econorator** dan logonya (`public/logo-econorator.png`, `public/
 - Web hanya memantau; kecepatan paddle wheel diatur dari panel box.
 - Satuan kecepatan **rpm** (Josh dan Pak Erwin). DO dalam **mg/L**: ideal **5–8**, batas minimum aman **3**, batas kritis **2** (`src/config.ts` → `doLevels`).
 - Segmentasi sisa pakan memakai algoritma proyek anco, tetapi **3 kategori** (habis, sedikit, banyak) dengan rekomendasi porsi (+30% / tetap / −30%). Web hanya menampilkan nilai hasil; **foto dan mask tidak ditampilkan, foto tidak disimpan** (6 Nov).
-- Algoritma kebutuhan oksigen tetap ada; web hanya menampilkan nilainya. Belum ada kartunya karena nilai dan satuannya belum didefinisikan.
+- Algoritma kebutuhan oksigen tetap ada; web hanya menampilkan nilainya. Belum ada kartunya karena nilai dan satuannya belum didefinisikan
 
-## TODO menunggu keputusan
 
-| Hal | Pemutus |
-|---|---|
-| Perilaku tepat di batas ambang DO (asumsi: ideal 5 ≤ DO ≤ 8, aman ≥ 3, kritis < 2), aturan alarm (usulan: < 3 dan < 2), histeresis, lama minimum, rentang kecepatan rpm (poros kincir atau motor, terukur atau setelan), nilai `panel.mode`, frekuensi telemetri, batas offline, ESP32 vs PLC | Josh / dosen |
-| Lokasi inferensi, ambang persen tiap kategori dan cara model memberi 3 kelas, aturan 30%, apakah nama field harus sama dengan kontrak REST anco, parameter kompresi foto (sekarang bawaan dev: 1280 px, JPEG 0,7), cara mengumpulkan foto uji untuk skripsi (foto tidak disimpan), nilai dan satuan algoritma oksigen | Rahmadian / dosen |
-| **Biomassa**: masukan, keluaran, ambang, validasi, masuk expo atau tidak. Belum ada layar atau field; lihat kontrak bagian 4b. Tidak ada label penyakit sebelum ada dasar data berlabel | Rahmadian / dosen |
-| Nama kolam, jumlah aerator, peran & berkas HKI (ditunda) | Dosen / Ardan |
-| Batasan endpoint unggah foto (tanpa login): ukuran/tipe/rate limit, PIN opsional | Dosen |
 
 ## Catatan teknis dan batas yang diketahui
 
